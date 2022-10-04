@@ -8,7 +8,7 @@ jsonfile = 'Data.json'
 # Home
 @app.route('/')
 def hello_world():
-   return 'Hello'
+   return 'Hello World'
 
 # List or Create api
 @app.route('/users', methods=['GET', 'POST'])
