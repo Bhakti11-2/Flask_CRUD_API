@@ -5,11 +5,10 @@ import json
 app = Flask(__name__)
 jsonfile = 'Data.json'
 
-# Home
+# home
 @app.route('/')
 def hello_world():
    return 'Hello World'
-
 
 # list or create api
 @app.route('/users', methods=['GET', 'POST'])
