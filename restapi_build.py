@@ -5,6 +5,28 @@ import json
 app = Flask(__name__)
 jsonfile = 'Data.json'
 
+structure = {
+    "name": str,
+    "email": str,
+    "username": str,
+}
+
+def input_validation(new_data):
+    given_data = True
+    for y, z in new_data.items():
+        if y in structure:
+            if type(new_data[y]) == structure[y]:
+                print("all good")
+            else:
+                print("ERROR")
+                given_data = False
+                break
+        else:
+            print("Incorrect data given")
+            given_data = False
+            break
+    return(given_data)
+
 # Home
 @app.route('/')
 def hello_world():
@@ -20,13 +42,18 @@ def list_create():
     elif request.method == 'POST':
         id = random.randint(1000, 9999)
         new_data = request.json
-        new_data.update({"id": id})
-        with open(jsonfile) as f:
-            data = json.loads(f.read())
-        data.append(new_data)
-        with open(jsonfile, "w") as f:
-            json.dump(data, f)
-        return jsonify(new_data)
+
+        if input_validation(new_data) == True:
+            new_data.update({"id": id})
+            with open(jsonfile) as f:
+                data = json.loads(f.read())
+            data.append(new_data)
+            with open(jsonfile, "w") as f:
+                json.dump(data, f)
+            return jsonify(new_data)
+        else:
+            return jsonify("ERROR: Can't create api, incorrect data given")
+
 
 # get api
 @app.route('/users/<int:id>', methods=['GET'])
@@ -46,10 +73,13 @@ def update(id):
     for data_dict in data:
         if id == data_dict['id']:
             new_data = request.json
-            data_dict.update(new_data)
-            with open(jsonfile, "w") as f:
-                json.dump(data, f)
-            return jsonify(data_dict)
+            if input_validation(new_data)== True:
+                data_dict.update(new_data)
+                with open(jsonfile, "w") as f:
+                    json.dump(data, f)
+                return jsonify(data_dict)
+            else:
+                return jsonify("ERROR: Can't create api, incorrect data given")
     return "Not found"
 
 # delete api
